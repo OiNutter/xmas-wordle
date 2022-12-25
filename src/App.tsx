@@ -1,5 +1,4 @@
 import React, { createRef, Fragment, RefObject, useEffect, useState } from 'react';
-import { workerData } from 'worker_threads';
 import './App.scss';
 import { Input } from './Input';
 import dictionary from "./dictionary.json"
