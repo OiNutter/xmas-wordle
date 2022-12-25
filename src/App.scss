@@ -1,0 +1,182 @@
+$correct: #090;
+$misplaced: #cc0;
+$wrong: lightgray;
+
+@import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap');
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #900;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  font-family: 'Mountains of Christmas', cursive;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  &.success {
+    color: $correct
+  }
+
+  &.failed {
+    color: #900;
+  }
+}
+
+.guess {
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 350px;
+  margin:10px auto;
+}
+
+.input-tile {
+  display:block;
+  margin: 5px;
+  
+  width: 60px;
+  height: 60px;
+  font-size: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  backface-visibility: visible !important;
+  position:relative;
+  font-family: 'Poppins', sans-serif;
+  
+  input {
+    width:100%;
+    height:100%;
+    position:absolute;
+    opacity: 0;
+    top:0;
+    left: 0;
+  }
+
+  .tile-inner {
+    border: 1px solid darkgray;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    background: white;
+    position:absolute;
+    top:0;
+    left:0;
+    pointer-events: none;
+    
+    animation-duration: 500ms;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+  }
+
+  &.filled {
+    border-color: black;
+  }
+
+  &.correct {
+    .tile-inner {
+      animation-name: flipCorrect;
+    }
+  }
+  
+  &.wrongplace {
+    .tile-inner {
+      animation-name: flipMisplaced;
+    }
+  }
+  
+  &.wrong {
+    .tile-inner {
+      animation-name: flipWrong;
+    }
+  }
+}
+
+.guess {
+  &.correct {
+    .tile-inner {
+      animation-name: bounce;
+      animation-duration:1s;
+    }
+  }
+}
+
+@keyframes flipCorrect {
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    background: white;
+    transform: scaleY(0);
+  }
+
+  100% {
+    transform: scaleY(1);
+    background:$correct;
+    color: white;
+  }
+}
+
+@keyframes flipMisplaced {
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    background: white;
+    transform: scaleY(0);
+  }
+
+  100% {
+    transform: scaleY(1);
+    background:$misplaced;
+    color: white;
+  }
+}
+
+@keyframes flipWrong {
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    background: white;
+    transform: scaleY(0);
+  }
+
+  100% {
+    transform: scaleY(1);
+    background: $wrong;
+  }
+}
+
+@keyframes bounce {
+	0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+	40% {
+    transform: translateY(-30px);
+    
+  }
+	60% {
+    transform: translateY(-15px);
+  }
+  100% {
+    background-color: $correct;
+    color: white;
+  }
+}
