@@ -55,6 +55,9 @@ export const Input: ForwardRefExoticComponent<
           ref={ref}
           maxLength={1}
           defaultValue={value}
+          onFocus={(e) => {
+            e.preventDefault()
+          }}
           onChange={(e) => {
             setLetter(index, e.target.value)
           }}

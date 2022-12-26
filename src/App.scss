@@ -6,6 +6,10 @@ $darkgrey: #666;
 @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
+html,body {
+  min-height: 100vh;
+}
+
 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 0,
@@ -18,6 +22,7 @@ $darkgrey: #666;
   text-align: center;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
+  min-height: 100vh;
 }
 
 .App-header {

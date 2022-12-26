@@ -224,7 +224,6 @@ function App() {
       return letters.join("")
     })
     if (refs.length > row && refs[row].length > (index) && refs[row]![index]!.current) {
-      console.log("firing events", refs[row]![index]!.current!)
       refs[row]![index]!.current!.focus()
       refs[row]![index]!.current!.value = ""
       const event = new window.CustomEvent("change")
@@ -273,8 +272,6 @@ function App() {
             let currentIndex = currentGuess.indexOf(" ")
             if (currentIndex === -1)
               currentIndex = currentGuess.length
-
-            console.log("currentIndex", currentIndex)
             clearLetter(currentIndex-1)
           }}
           submit={() => {
