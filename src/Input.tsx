@@ -58,6 +58,7 @@ export const Input: ForwardRefExoticComponent<
           onFocus={(e) => {
             e.preventDefault()
           }}
+          inputMode='none'
           onChange={(e) => {
             setLetter(index, e.target.value)
           }}
