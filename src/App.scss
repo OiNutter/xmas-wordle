@@ -2,6 +2,7 @@ $correct: #090;
 $misplaced: #cc0;
 $wrong: lightgray;
 $darkgrey: #666;
+$failed: #900;
 
 @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
@@ -26,7 +27,7 @@ html,body {
 }
 
 .App-header {
-  background-color: #900;
+  background-color: $failed;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,35 +37,61 @@ html,body {
   font-family: 'Mountains of Christmas', cursive;
 }
 
+.guesses {
+  position:relative;
+  margin-top: 10px;
+}
+
 h2 {
+  position:absolute;
+  align-items: center;
+  justify-content: center;
+  margin:-25px 0 0 -150px;
+  top: 50%;
+  left: 50%;
+  background: white;
+  z-index: 100;
   font-family: 'Poppins', sans-serif;
   text-transform: uppercase;
   font-weight: 600;
+  height: 50px;
+  width: 300px;
+  border: 2px solid;
+  color: white;
+  display:none;
+
+  &.success, &.failed {
+    display:flex;
+  }
 
   &.success {
-    color: $correct
+    background-color: $correct;
+    border-color: darken($correct, 10);
   }
 
   &.failed {
-    color: #900;
+    background-color: $failed;
+    border-color: darken($failed, 10);
   }
+  height: 50px;
 }
 
 .guess {
   display:flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   max-width: 350px;
-  margin:10px auto;
+  margin:4px auto;
 }
 
 .input-tile {
   display:block;
-  margin: 0 5px;
+  margin: 0 2px;
   
   width: 60px;
   height: 60px;
-  font-size: 3rem;
+  font-weight:600;
+  font-size: 2.5rem;
   text-align: center;
   text-transform: uppercase;
   backface-visibility: visible !important;

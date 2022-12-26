@@ -41,6 +41,10 @@ interface FoundLetter {
   expected: number
   found: number[] 
 }
+enum Results {
+  SUCCESS="Ho Ho Ho!",
+  FAILED="Looks like you got stuck!"
+}
 
 function App() {
   const [word] = useState(words[Math.floor(Math.random()*words.length)].toUpperCase())
@@ -48,7 +52,7 @@ function App() {
   const [guesses, setGuesses] = useState<Guess[]>([])
   const [used, setUsed] = useState<Record<string, LetterState>>({})
   const [currentGuess, setGuess] = useState("     ")
-  const [result, setResult] = useState("Enter Guess")
+  const [result, setResult] = useState<string | undefined>()
   const MAX_GUESSES = 6
   const MAX_CHARS = 5
   const refs:Array<Array<RefObject<HTMLInputElement>>> = [...Array(MAX_GUESSES)].map((i) => {
@@ -88,10 +92,11 @@ function App() {
         letters: currentGuess.split("").map((c,i) => "correct"),
         success: true
       } as Guess
-      result = "HO HO HO!"
+      result = Results.SUCCESS
       isCorrect = true
     } else {
-      result = "TRY AGAIN!"
+      if (guesses.length + 1 === MAX_GUESSES)
+        result = Results.FAILED
       const letters = currentGuess.split("").map((c,i) => {
         if(word.includes(c)) {
           found[c].found.push(i)
@@ -194,9 +199,9 @@ function App() {
 
   const getResultClass = () => {
     switch (result) {
-      case "HO HO HO!":
+      case Results.SUCCESS:
         return "success"
-      case "TRY AGAIN!":
+      case Results.FAILED:
         return "failed"
       default:
         return ""
@@ -237,31 +242,33 @@ function App() {
         <h1>Christmas Wordle</h1>
       </header>
       <main>
-        <h2 className={getResultClass()}>{result}</h2>
-        {[...Array(MAX_GUESSES).keys()].map((i) => (
-          <Fragment key={i}>
-            <div className={getGuessClass(i)}>
-              {[...Array(MAX_CHARS).keys()].map((j) => (
-                <Input
-                  key={j}
-                  ref={refs[i][j]}
-                  className={getClassName(i,j)}
-                  index={j}
-                  value={getLetter(i,j)}
-                  disabled={i < guesses.length}
-                  setLetter={addLetter}
-                  focusInput={(index) => {
-                    const row = guesses.length
-                    if (refs.length > i && refs[row].length > (index+1) && refs[row]![index+1]!.current)
-                      refs[row]![index+1]!.current!.focus()
-                  }}
-                  clearLetter={clearLetter}
-                  makeGuess={makeGuess}
-                  style={{animationDelay: `${j * 100}ms`}}/> 
-              ))}
-            </div>
-          </Fragment>
-        ))}
+        <div className="guesses">
+          <h2 className={getResultClass()}>{result}</h2>
+          {[...Array(MAX_GUESSES).keys()].map((i) => (
+            <Fragment key={i}>
+              <div className={getGuessClass(i)}>
+                {[...Array(MAX_CHARS).keys()].map((j) => (
+                  <Input
+                    key={j}
+                    ref={refs[i][j]}
+                    className={getClassName(i,j)}
+                    index={j}
+                    value={getLetter(i,j)}
+                    disabled={i < guesses.length}
+                    setLetter={addLetter}
+                    focusInput={(index) => {
+                      const row = guesses.length
+                      if (refs.length > i && refs[row].length > (index+1) && refs[row]![index+1]!.current)
+                        refs[row]![index+1]!.current!.focus()
+                    }}
+                    clearLetter={clearLetter}
+                    makeGuess={makeGuess}
+                    style={{animationDelay: `${j * 100}ms`}}/> 
+                ))}
+              </div>
+            </Fragment>
+          ))}
+        </div>
         <Keyboard 
           used={used}
           setLetter= {(letter) => {
