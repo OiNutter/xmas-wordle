@@ -31,7 +31,6 @@ const KeyboardButton:FC<KeyboardButtonProps> = ({letter, state, className, ...pr
   )
 }
 export const Keyboard:FC<KeyboardProps> = ({used, setLetter, clearLetter, submit}:KeyboardProps) => {
-  console.log("used", used)
   return (
     <div className="keyboard">
       {rows.map((r, i) => (
