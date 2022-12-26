@@ -2,6 +2,7 @@ import React, { createRef, Fragment, RefObject, useEffect, useState } from 'reac
 import './App.scss';
 import { Input } from './Input';
 import dictionary from "./dictionary.json"
+import { Keyboard } from './Keyboard';
 
 console.log("Dictionary", dictionary)
 
@@ -27,9 +28,11 @@ const validWords = new Set([
   ...words
 ])
 
+export type LetterState = "wrong" | "wrongplace" | "correct"
+
 interface Guess {
   guess: string
-  letters: Array<"wrong" | "wrongplace" | "correct">
+  letters: Array<LetterState>
   success: boolean
 }
 
@@ -43,6 +46,7 @@ function App() {
   const [word] = useState(words[Math.floor(Math.random()*words.length)].toUpperCase())
 
   const [guesses, setGuesses] = useState<Guess[]>([])
+  const [used, setUsed] = useState<Record<string, LetterState>>({})
   const [currentGuess, setGuess] = useState("     ")
   const [result, setResult] = useState("Enter Guess")
   const MAX_GUESSES = 6
@@ -132,6 +136,35 @@ function App() {
         if (refs.length > row && refs[row].length > 0 && refs[row][0].current)
           refs[row][0].current!.focus()
       }
+      const currentUsed:Record<string, LetterState> = currentGuess
+        .split("")
+        .reduce((used, c, i) => {
+          if(used[c] === undefined) {
+            used[c] = guess.letters[i]
+            return used
+          }
+          switch(guess.letters[i]) {
+            case "correct":
+              used[c] = "correct"
+              break
+            case "wrongplace":
+              if (used[c] !== "correct")
+                used[c] = "wrongplace"
+              break
+            case "wrong": 
+              if (used[c] !== "correct" && used[c] !== "wrongplace")
+                used[c] = "wrong"
+              break
+          }
+
+          return used
+        }, {...used} as Record<string, LetterState>)
+      setUsed(u => {
+        return {
+          ...u,
+          ...currentUsed
+        }
+      })
       setResult(result)
     }
   }
@@ -170,6 +203,35 @@ function App() {
     }
   }
 
+  const addLetter = (index: number, char:string) => {
+    setGuess(g => {
+      const letters = g.split("")
+      letters[index] = char.toUpperCase()
+      return letters.join("")
+    })
+    const row = guesses.length
+    if (refs.length > row && refs[row].length > (index+1) && refs[row]![index+1]!.current)
+      refs[row]![index+1]!.current!.focus()
+  }
+
+  const clearLetter = (index:number) => {
+    const row = guesses.length
+    let current = currentGuess.split("")
+    current[index] = " "
+    setGuess(g => {
+      const letters = g.split("")
+      letters[index] = " "
+      return letters.join("")
+    })
+    if (refs.length > row && refs[row].length > (index) && refs[row]![index]!.current) {
+      console.log("firing events", refs[row]![index]!.current!)
+      refs[row]![index]!.current!.focus()
+      refs[row]![index]!.current!.value = ""
+      const event = new window.CustomEvent("change")
+      refs[row]![index]!.current!.dispatchEvent(event)
+    }
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -188,44 +250,36 @@ function App() {
                   index={j}
                   value={getLetter(i,j)}
                   disabled={i < guesses.length}
-                  setLetter={(index, char) => {
-                    setGuess(g => {
-                      const letters = g.split("")
-                      letters[index] = char.toUpperCase()
-                      return letters.join("")
-                    })
-                    const row = guesses.length
-                    if (refs.length > i && refs[row].length > (index+1) && refs[row]![index+1]!.current)
-                      refs[row]![index+1]!.current!.focus()
-                  }}
+                  setLetter={addLetter}
                   focusInput={(index) => {
                     const row = guesses.length
                     if (refs.length > i && refs[row].length > (index+1) && refs[row]![index+1]!.current)
                       refs[row]![index+1]!.current!.focus()
                   }}
-                  clearLetter={(index) => {
-                    const row = guesses.length
-                    let current = currentGuess.split("")
-                    current[index] = " "
-                    setGuess(g => {
-                      const letters = g.split("")
-                      letters[index] = " "
-                      return letters.join("")
-                    })
-                    if (refs.length > i && refs[row].length > (index) && refs[row]![index]!.current) {
-                      console.log("firing events", refs[row]![index]!.current!)
-                      refs[row]![index]!.current!.focus()
-                      refs[row]![index]!.current!.value = ""
-                      const event = new window.CustomEvent("change")
-                      refs[row]![index]!.current!.dispatchEvent(event)
-                    }
-                  }}
+                  clearLetter={clearLetter}
                   makeGuess={makeGuess}
                   style={{animationDelay: `${j * 100}ms`}}/> 
               ))}
             </div>
           </Fragment>
         ))}
+        <Keyboard 
+          used={used}
+          setLetter= {(letter) => {
+            const currentIndex = currentGuess.indexOf(" ")
+            addLetter(currentIndex, letter)
+          }}
+          clearLetter={() => {
+            let currentIndex = currentGuess.indexOf(" ")
+            if (currentIndex === -1)
+              currentIndex = currentGuess.length
+
+            console.log("currentIndex", currentIndex)
+            clearLetter(currentIndex-1)
+          }}
+          submit={() => {
+            makeGuess()
+          }}/>
       </main>
     </div>
   );

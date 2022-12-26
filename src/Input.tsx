@@ -56,11 +56,9 @@ export const Input: ForwardRefExoticComponent<
           maxLength={1}
           defaultValue={value}
           onChange={(e) => {
-            console.log("CHANGE", e.target.value)
             setLetter(index, e.target.value)
           }}
           onKeyDown={(e) => {
-            console.log("KEY", e.key)
             if (e.key === "Enter") {
               makeGuess()
             } else if (e.key === "Backspace") {
