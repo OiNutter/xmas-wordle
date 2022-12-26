@@ -17,6 +17,7 @@ $darkgrey: #666;
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
+  font-size: 16px;
 }
 
 .App-header {
@@ -58,7 +59,7 @@ h2 {
   
   width: 60px;
   height: 60px;
-  font-size: 50px;
+  font-size: 3rem;
   text-align: center;
   text-transform: uppercase;
   backface-visibility: visible !important;
@@ -192,6 +193,7 @@ h2 {
 
 .keyboard {
   margin: 10px 0;
+  max-width: 100%;
 
   .keyboard-row {
     display: flex;
@@ -208,13 +210,13 @@ h2 {
       color: $darkgrey;
       border-radius: 3px;
       margin: 2px;
-      font-size: 30px;
+      font-size: 2rem;
       font-weight: 600;
       min-width: 51px;
       text-transform: uppercase;
 
       &.enter {
-        font-size: 18px;
+        font-size: 1.2rem;
       }
 
       &.correct {
@@ -235,4 +237,29 @@ h2 {
       }
     }
   }
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px) {
+
+    .App {
+      font-size: 14px;
+    }
+
+    .keyboard {
+      .keyboard-row {
+        .keyboard-button {
+          font-size: 1.2rem;
+          min-width:20px;
+          padding: 7.5px;
+
+          &.enter {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+    
 }
