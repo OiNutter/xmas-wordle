@@ -1,5 +1,5 @@
 import { ComponentProps, FC} from "react"
-import { LetterState } from "./App"
+import { LetterState } from "../App"
 
 interface KeyboardProps {
   used: Record<string, LetterState>

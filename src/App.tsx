@@ -1,27 +1,11 @@
 import React, { createRef, Fragment, RefObject, useEffect, useState } from 'react';
-import './App.scss';
-import { Input } from './Input';
-import dictionary from "./dictionary.json"
-import { Keyboard } from './Keyboard';
-
-console.log("Dictionary", dictionary)
-
-const words = [
-  "holly",
-  "santa",
-  "comet",
-  "cupid",
-  "vixen",
-  "merry",
-  "angel",
-  "bells",
-  "mince",
-  "stuck",
-  "snowy",
-  "candy",
-  "carol",
-  "claus",
-]
+import './styles/App.scss';
+import { Input } from './components/Input';
+import { Keyboard } from './components/Keyboard';
+import dictionary from "./resources/dictionary.json"
+import words from './resources/words.json'
+import { Stats } from './utils/stats';
+import { StatsModal } from './components/StatsModal';
 
 const validWords = new Set([
   ...Object.keys(dictionary).filter((w) => w.length === 5),
@@ -46,9 +30,14 @@ enum Results {
   FAILED="Looks like you got stuck!"
 }
 
+const stats = new Stats()
+console.log("loaded stats", stats)
 function App() {
   const [word] = useState(words[Math.floor(Math.random()*words.length)].toUpperCase())
 
+  const [showStats, setShowStats] = useState(false)
+
+  const [correctGuess, setCorrectGuess] = useState<number | undefined>()
   const [guesses, setGuesses] = useState<Guess[]>([])
   const [used, setUsed] = useState<Record<string, LetterState>>({})
   const [currentGuess, setGuess] = useState("     ")
@@ -94,9 +83,14 @@ function App() {
       } as Guess
       result = Results.SUCCESS
       isCorrect = true
+      stats.recordWin(guesses.length+1)
+      setCorrectGuess(guesses.length+1)
     } else {
-      if (guesses.length + 1 === MAX_GUESSES)
+      if (guesses.length + 1 === MAX_GUESSES) {
         result = Results.FAILED
+        stats.recordLoss()
+      }
+        
       const letters = currentGuess.split("").map((c,i) => {
         if(word.includes(c)) {
           found[c].found.push(i)
@@ -131,6 +125,7 @@ function App() {
     }
 
     if(guess) {
+      stats.save()
       setGuesses(g => [
         ...g,
         guess
@@ -228,7 +223,7 @@ function App() {
       letters[index] = " "
       return letters.join("")
     })
-    if (refs.length > row && refs[row].length > (index) && refs[row]![index]!.current) {
+    if (refs[row] && refs[row][index] && refs[row]![index]!.current) {
       refs[row]![index]!.current!.focus()
       refs[row]![index]!.current!.value = ""
       const event = new window.CustomEvent("change")
@@ -240,6 +235,13 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Christmas Wordle</h1>
+        <nav>
+          <button onClick={() => {
+            setShowStats(s => !s)
+          }} className="material-symbols-outlined">
+            bar_chart
+          </button>
+        </nav>
       </header>
       <main>
         <div className="guesses">
@@ -284,6 +286,7 @@ function App() {
           submit={() => {
             makeGuess()
           }}/>
+        <StatsModal stats={stats} isOpen={showStats} toggle={() => setShowStats(s=> !s)} current={correctGuess}/>
       </main>
     </div>
   );
