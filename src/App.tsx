@@ -234,6 +234,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <div className="buffer"></div>
         <h1>Christmas Wordle</h1>
         <nav>
           <button onClick={() => {
