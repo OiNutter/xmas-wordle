@@ -25,7 +25,6 @@ export class Stats {
         6: 0
       }
     }
-    console.log("PARSED", this.data)
   }
 
   recordLoss() {

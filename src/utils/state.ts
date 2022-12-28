@@ -1,6 +1,5 @@
 import { Guess, LetterState } from "../types"
 import { readStorage, writeStorage } from "./storage"
-import words from '../resources/words.json'
 
 interface StateRecord {
   currentWord: string
@@ -10,7 +9,7 @@ interface StateRecord {
 }
 export class State {
   data: StateRecord
-  constructor() {
+  constructor(words: string[]) {
     const data = readStorage("xmas-wordle-state") ?? {
       guesses: [],
       currentGuess: "     ",
@@ -19,7 +18,7 @@ export class State {
 
     if (!data.currentWord) {
       data.currentWord = words[Math.floor(Math.random()*words.length)].toUpperCase()
-      this.save(data) 
+      this.save(data)
     }
     
     this.data = data
